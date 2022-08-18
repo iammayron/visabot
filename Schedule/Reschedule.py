@@ -1,0 +1,134 @@
+import random
+import time
+
+import config
+from Base import Base
+from Notification import Notification
+from Selenium import By, Select
+
+Notification = Notification()
+
+
+class Reschedule(Base):
+    def __init__(self) -> None:
+        super().__init__()
+        self.consulateStateFieldId = 'appointments_consulate_appointment_facility_id'
+        self.consulateDateFieldId = 'appointments_consulate_appointment_date'
+        self.consulateTimeFieldId = 'appointments_consulate_appointment_time'
+        self.biometricsStateFieldId = 'appointments_asc_appointment_facility_id'
+        self.biometricsDateFieldId = 'appointments_asc_appointment_date'
+        self.biometricsTimeFieldId = 'appointments_asc_appointment_time'
+
+    def run(self, consulateDate: str, consulateTime: str, biometricsDate: str or None = None, biometricsTime: str or None = None) -> bool:
+        self.goToSchedulePage()
+
+        retryCount = 1
+        while 1:
+            if retryCount > 1:
+                print("algo deu errado")
+                Notification.sendAll(
+                    "Erro!", "Uma tentativa de reagendamento falhou!")
+
+            if retryCount > 3:
+                return False
+
+            if self.handleConsulateSelection(consulateDate, consulateTime):
+                if biometricsDate is not None and biometricsTime is not None:
+                    if self.handleBiometricsSelection(biometricsDate, biometricsTime):
+                        if self.handleConfirmation():
+                            print("deu tudo certo")
+                            Notification.sendAll("Sucesso!", "Reagendamento realizado para: Consulado: %s - %s %s Biometria: %s - %s %s" % (
+                                config.CONSULATE_SCHEDULED_STATE, consulateDate, consulateTime, config.BIOMETRICS_SCHEDULED_STATE, biometricsDate, biometricsTime))
+                            return True
+                else:
+                    if self.handleConfirmation():
+                        print("deu tudo certo")
+                        Notification.sendAll("Sucesso!", "Reagendamento realizado para: Consulado: %s - %s %s" % (
+                            config.CONSULATE_SCHEDULED_STATE, consulateDate, consulateTime))
+                        return True
+            retryCount += 1
+
+    def goToSchedulePage(self):
+        # self.seleniumDriver.get(config.APPOINTMENT_URL)
+        self.seleniumDriver.get("http://visa-simulator.test")
+
+    def selectOption(self, fieldId: str, option: str) -> bool:
+        try:
+            consulateField = Select(self.seleniumDriver.find_element(
+                By.ID, fieldId))
+            consulateField.select_by_index(0)
+            time.sleep(random.randint(1, 3))
+            consulateField.select_by_value(option)
+            time.sleep(random.randint(1, 3))
+
+            return True
+        except:
+            return False
+
+    def selectDate(self, fieldId: str, date: str) -> bool:
+        self.seleniumDriver.find_element(
+            By.ID, fieldId).click()
+        jsSelectConsulateSectionDate = '$("#%s").datepicker("setDate", "%s")' % (
+            fieldId, date)
+        self.seleniumDriver.execute_script(jsSelectConsulateSectionDate)
+        time.sleep(random.randint(1, 3))
+
+        try:
+            _year, _month, _day = date.split("-")
+            _month = int(_month) - 1
+            _day = int(_day)
+
+            dateSelector = '//td[@data-month="%s" and @data-year="%s"]//a[contains(text(),"%s")]' % (
+                _month, _year, _day
+            )
+
+            dateElement = self.seleniumDriver.find_element(
+                By.XPATH, dateSelector)
+            dateElement.click()
+            time.sleep(random.randint(1, 3))
+
+            return True
+        except Exception as error:
+            print(error)
+            return False
+
+    def handleConsulateSelection(self, consulateDate: str, consulateTime: str) -> bool:
+        selectConsulateState = self.selectOption(self.consulateStateFieldId,
+                                                 config.CONSULATE_SCHEDULED_STATE)
+        if selectConsulateState:
+            selectConsulateDate = self.selectDate(
+                self.consulateDateFieldId, consulateDate)
+            if selectConsulateDate:
+                selectConsulateTime = self.selectOption(
+                    self.consulateTimeFieldId, consulateTime)
+                if selectConsulateTime:
+                    return True
+
+    def handleBiometricsSelection(self, biometricsDate: str, biometricsTime: str) -> bool:
+        selectBiometricsState = self.selectOption(
+            self.biometricsStateFieldId, config.BIOMETRICS_SCHEDULED_STATE)
+        if selectBiometricsState:
+            selectBiometricsDate = self.selectDate(
+                self.biometricsDateFieldId, biometricsDate)
+            if selectBiometricsDate:
+                selectBioemetricsTime = self.selectOption(
+                    self.biometricsTimeFieldId, biometricsTime)
+                if selectBioemetricsTime:
+                    return True
+
+    def handleConfirmation(self) -> bool:
+        try:
+            self.seleniumDriver.find_element(By.NAME, 'commit').click()
+            time.sleep(random.randint(1, 3))
+
+            self.seleniumDriver.find_element(
+                By.XPATH, '//a[contains(@class,"alert") and contains(text(),"%s")]' % config.CONFIRM_BUTTON_TEXT).click()
+            time.sleep(random.randint(1, 3))
+
+            # TODO: Read success message
+            # TODO: Read error message
+            # TODO: Send notification in both cases
+
+            return True
+        except:
+            return False
