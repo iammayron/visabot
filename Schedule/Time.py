@@ -9,7 +9,8 @@ class Time():
         self.request = Request()
 
     def allAvailable(self, url: str, qty: int = 5) -> list:
-        return self.request.json(url)[:qty]
+        times: dict = self.request.json(url)
+        return times.get('available_times')[:qty]
 
     def firstAvailable(self, url: str, filterQty: int = 5) -> str:
         slots = self.allAvailable(url, filterQty)
@@ -20,9 +21,7 @@ class Time():
         toSlot: str = config.SCHEDULE_TIME_TO
 
         for slot in slots:
-            slot: dict = slot
-            slot = slot.get('slot')
-            if fromSlot and toSlot:
+            if fromSlot != "null" and toSlot != "null":
                 if self.isBetween(slot, fromSlot, toSlot):
                     return slot
             else:
@@ -36,7 +35,8 @@ class Time():
                 fromSlot: a string with the slot in format 'HH:MM'
                 toSlot: a string with the slot in format 'HH:MM'
         """
-        slot = datetime.strptime(slot, '%H-%M')
-        fromSlot = datetime.strptime(fromSlot, '%H-%M')
-        toSlot = datetime.strptime(toSlot, '%H-%M')
+        slot = datetime.strptime(slot, '%H:%M')
+        fromSlot = datetime.strptime(fromSlot, '%H:%M')
+        toSlot = datetime.strptime(toSlot, '%H:%M')
+
         return slot >= fromSlot and slot <= toSlot

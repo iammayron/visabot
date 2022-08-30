@@ -12,27 +12,32 @@ class Date():
         self.printDates(dates)
         return dates
 
+    def allFiltered(self, url: str, currentDate: str, fromDate: str or None = None, toDate: str or None = None, filterQty: int = 5) -> list:
+        dates = self.allAvailable(url, filterQty)
+        return self.allFilteredDates(currentDate, dates, fromDate, toDate)
+
     def firstAvailable(self, url: str, currentDate: str, fromDate: str or None = None, toDate: str or None = None, filterQty: int = 5) -> str:
         dates = self.allAvailable(url, filterQty)
-        return self.earliest(currentDate, dates, fromDate, toDate)
+        filteredDates = self.allFilteredDates(
+            currentDate, dates, fromDate, toDate)
+        return filteredDates[0]
 
-    def earliest(self, currentDate: str, dates: list, fromDate: str or None = None, toDate: str or None = None) -> str:
+    def allFilteredDates(self, currentDate: str, dates: list, fromDate: str or None = None, toDate: str or None = None) -> str:
         lastDate = None
+        availableDates: list = []
+
         for date in dates:
             date: dict = date
             date = date.get('date')
-            print('is earlier', date, self.isEarlier(
-                currentDate, date), lastDate)
             if self.isEarlier(currentDate, date) and date != lastDate:
-                print('from to dates', fromDate, toDate)
-                if fromDate != "null" and toDate != "null":
-                    print('is between')
+                if (fromDate != "null" and fromDate is not None) and (toDate != "null" and toDate is not None):
                     if self.isBetween(date, fromDate, toDate):
-                        return date
+                        availableDates.append(date)
                 else:
-                    return date
+                    availableDates.append(date)
             lastDate = date
-        print()
+
+        return availableDates
 
     def isEarlier(self, oldDate: str, newDate: str) -> bool:
         return datetime.strptime(oldDate, '%Y-%m-%d') > datetime.strptime(newDate, '%Y-%m-%d')
@@ -53,6 +58,6 @@ class Date():
     def printDates(self, dates: list):
         for date in dates:
             date: dict = date
-            print("%s \t business_day: %s" %
+            print("Available date: %s \t Business day: %s" %
                   (date.get('date'), date.get('business_day')))
         print()
