@@ -32,7 +32,7 @@ class Selenium():
             localUse = platform.system() == 'Darwin'
 
             options = Options()
-            options.headless = True
+            # options.headless = True
             # options.noSandbox = True
             # options.disableGpu = True
             # options.disableExtensions = True

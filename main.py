@@ -77,6 +77,7 @@ if __name__ == "__main__":
                                                 if Reschedule.run(
                                                         consulateDate, consulateTime, biometricsDate, biometricsTime):
                                                     rescheduleStatus = True
+                                                    EXIT = True
                                                     break
                                             else:
                                                 customMessage(
@@ -87,6 +88,7 @@ if __name__ == "__main__":
                             else:
                                 if Reschedule.run(consulateDate, consulateTime):
                                     rescheduleStatus = True
+                                    EXIT = True
                                     break
                         else:
                             customMessage(
@@ -95,7 +97,7 @@ if __name__ == "__main__":
             if(EXIT):
                 break
 
-            time.sleep(60 * 5)
+            time.sleep(60 * config.SLEEP_TIME)
         except:
             retry_count += 1
-            time.sleep(60 * 5)
+            time.sleep(60 * config.SLEEP_TIME)
