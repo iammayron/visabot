@@ -52,27 +52,22 @@ class Reschedule(Base):
         option = str(option)
         loop = True
 
-        print("selecting: %s - %s", fieldId, option)
         while loop:
             try:
                 field = Select(self.seleniumDriver.find_element(
                     By.ID, fieldId))
 
                 if self.optionExist(field.options, option) is False:
-                    print('option not found')
                     return False
 
                 field.select_by_index(0)
                 time.sleep(random.randint(1, 3))
                 selection = field.select_by_value(option)
-                print(selection)
                 time.sleep(random.randint(1, 3))
 
-                print(nextFieldId)
                 if (nextFieldId is not None):
                     nextField = self.seleniumDriver.find_elements(
                         By.ID, nextFieldId)
-                    print(len(nextField))
                     if len(nextField):
                         loop = False
                 else:
@@ -81,9 +76,8 @@ class Reschedule(Base):
                 return True
             except Exception as error:
                 content = self.seleniumDriver.page_source
-                if content.find('too many requests') != -1:
+                if content.find('Too Many Requests') != -1:
                     exit()
-                print('Error from field %s: %s' % (fieldId, error))
                 return False
 
     def optionExist(self, allOptions: list, option: str) -> bool:
@@ -94,7 +88,6 @@ class Reschedule(Base):
         return False
 
     def selectDate(self, fieldId: str, date: str) -> bool:
-        print("selecting: %s - %s", fieldId, date)
         self.seleniumDriver.find_element(
             By.ID, fieldId).click()
         jsSelectDate = '$("#%s").datepicker("setDate", "%s")' % (
@@ -111,12 +104,9 @@ class Reschedule(Base):
                 _month, _year, _day
             )
 
-            print('find element')
             dateElement = self.seleniumDriver.find_element(
                 By.XPATH, dateSelector)
-            print('click')
             dateElement.click()
-            print("date selected")
             time.sleep(random.randint(1, 3))
 
             return True
@@ -124,7 +114,6 @@ class Reschedule(Base):
             content = self.seleniumDriver.page_source
             if content.find('Too Many Requests') != -1:
                 exit()
-            print('error from field %s: %s' % (fieldId, error))
             return False
 
     def handleConsulateSelection(self, consulateDate: str, consulateTime: str) -> bool:
@@ -134,7 +123,6 @@ class Reschedule(Base):
         if selectConsulateState:
             selectConsulateDate = self.selectDate(
                 self.consulateDateFieldId, consulateDate)
-            print(selectConsulateDate)
             if selectConsulateDate:
                 selectConsulateTime = self.selectOption(
                     self.consulateTimeFieldId, consulateTime)
@@ -158,12 +146,9 @@ class Reschedule(Base):
 
     def handleConfirmation(self) -> bool:
         try:
-            print('clicking on confirm button')
             self.seleniumDriver.find_element(By.NAME, 'commit').click()
             time.sleep(random.randint(1, 3))
-            # return True
 
-            print('clicking on confirm button 2')
             self.seleniumDriver.find_element(
                 By.XPATH, '//a[contains(@class,"alert") and contains(text(),"%s")]' % config.CONFIRM_BUTTON_TEXT).click()
             time.sleep(random.randint(1, 3))
