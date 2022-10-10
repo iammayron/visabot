@@ -1,0 +1,21 @@
+Time running: 4:09:41
+Sleep time: 3 minute(s)
+------------------
+
+Started at: 2022-10-05 19:36:50.569098
+Ended at: 2022-10-05 19:57:53.571152
+Time running: 0:21:03.002054
+Sleep time: 3 minute(s)
+------------------
+
+Started at: 2022-10-05 22:45:55.180818
+Ended at: 2022-10-06 02:20:32.494140
+Time running: 3:34:37.313322
+Sleep time: 3 minute(s)
+------------------
+
+Started at: 2022-10-06 11:32:54.339072
+Ended at: 2022-10-06 15:42:34.469630
+Time running: 4:09:40.130558
+Sleep time: 3 minute(s)
+------------------

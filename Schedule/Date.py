@@ -7,14 +7,20 @@ class Date():
     def __init__(self) -> None:
         self.request = Request()
 
-    def allAvailable(self, url: str, qty: int = 5) -> list:
+    def allAvailable(self, url: str, qty: int = 5) -> list or bool:
         dates = self.request.json(url)[:qty]
-        self.printDates(dates)
-        return dates
+        if len(dates):
+            self.printDates(dates)
+            return dates
+        else:
+            return False
 
     def allFiltered(self, url: str, currentDate: str, fromDate: str or None = None, toDate: str or None = None, filterQty: int = 5) -> list:
         dates = self.allAvailable(url, filterQty)
-        return self.allFilteredDates(currentDate, dates, fromDate, toDate)
+        if dates is not False:
+            return self.allFilteredDates(currentDate, dates, fromDate, toDate)
+        else:
+            return False
 
     def firstAvailable(self, url: str, currentDate: str, fromDate: str or None = None, toDate: str or None = None, filterQty: int = 5) -> str:
         dates = self.allAvailable(url, filterQty)
@@ -56,6 +62,7 @@ class Date():
         return date >= fromDate and date <= toDate
 
     def printDates(self, dates: list):
+        print()
         for date in dates:
             date: dict = date
             print("Available date: %s \t Business day: %s" %

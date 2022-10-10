@@ -1,5 +1,6 @@
 from ._loadenv import *
 
+BROWSER = str(os.getenv("APP_BROWSER", "chrome")).lower()
 LANGUAGE = str(os.getenv("APP_LANGUAGE", "pt-br")).lower()
 SLEEP_TIME = int(os.getenv("APP_SLEEP_TIME", 5))
 CONTINUE_BUTTON_TEXT = {
