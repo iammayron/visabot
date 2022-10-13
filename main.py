@@ -6,6 +6,7 @@ from playsound import playsound
 import config
 from Auth import Auth
 from Schedule import Date, Reschedule, Time
+from Selenium import Selenium
 
 Auth = Auth()
 Date = Date()
@@ -34,7 +35,8 @@ if __name__ == "__main__":
     END_TIME = None
     while 1:
         if RETRY_COUNT > 6:
-            if (END_TIME != None):
+            Selenium.kill()
+            if (END_TIME == None):
                 END_TIME = datetime.today()
                 duration = END_TIME - START_TIME
                 with open('duration.txt', 'a') as f:
