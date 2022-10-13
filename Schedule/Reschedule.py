@@ -62,7 +62,7 @@ class Reschedule(Base):
 
                 field.select_by_index(0)
                 time.sleep(random.randint(1, 3))
-                selection = field.select_by_value(option)
+                field.select_by_value(option)
                 time.sleep(random.randint(1, 3))
 
                 if (nextFieldId is not None):
