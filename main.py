@@ -43,16 +43,16 @@ if __name__ == "__main__":
                     f.write('\nStarted at: %s' % START_TIME)
                     f.write('\nEnded at: %s' % END_TIME)
                     f.write('\nTime running: %s' % duration)
-                    f.write('\nSleep time: %s minute(s)' % 3)
+                    f.write('\nSleep time: %s minute(s)' % config.SLEEP_TIME)
                     f.write('\n------------------\n')
             RETRY_COUNT = 3
             time.sleep(60 * 60)
         try:
             print(datetime.today())
             print("------------------")
+            consulateDates = Date.allFiltered(config.CONSULATE_DATE_URL, config.CONSULATE_SCHEDULED_DATE,
+                                              config.SCHEDULE_CONSULATE_DATE_FROM, config.SCHEDULE_CONSULATE_DATE_TO)
             if Auth.isLoggedIn() == True:
-                consulateDates = Date.allFiltered(config.CONSULATE_DATE_URL, config.CONSULATE_SCHEDULED_DATE,
-                                                  config.SCHEDULE_CONSULATE_DATE_FROM, config.SCHEDULE_CONSULATE_DATE_TO)
                 if consulateDates is not False:
                     if len(consulateDates):
                         if (END_TIME != None):

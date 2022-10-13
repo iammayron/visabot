@@ -54,7 +54,8 @@ class Auth(Base):
 
     def isLoggedIn(self) -> bool:
         content = self.seleniumDriver.page_source
-        return content.find("many requests") == -1
+        content = str(content).lower()
+        return content.find("too many requests") == -1 and content.find("need to sign in") == -1
 
     def loginIfNotBlocked(self) -> bool:
         try:
