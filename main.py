@@ -39,7 +39,7 @@ if __name__ == "__main__":
             if (END_TIME == None):
                 END_TIME = datetime.today()
                 duration = END_TIME - START_TIME
-                with open('duration.txt', 'a') as f:
+                with open('duration.log', 'a') as f:
                     f.write('\nStarted at: %s' % START_TIME)
                     f.write('\nEnded at: %s' % END_TIME)
                     f.write('\nTime running: %s' % duration)
