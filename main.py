@@ -35,7 +35,6 @@ if __name__ == "__main__":
     END_TIME = None
     while 1:
         if RETRY_COUNT > 6:
-            Selenium.kill()
             if (END_TIME == None):
                 END_TIME = datetime.today()
                 duration = END_TIME - START_TIME
@@ -45,6 +44,7 @@ if __name__ == "__main__":
                     f.write('\nTime running: %s' % duration)
                     f.write('\nSleep time: %s minute(s)' % config.SLEEP_TIME)
                     f.write('\n------------------\n')
+            Selenium.kill()
             RETRY_COUNT = 3
             time.sleep(60 * 60)
         try:
@@ -54,11 +54,17 @@ if __name__ == "__main__":
                                               config.SCHEDULE_CONSULATE_DATE_FROM, config.SCHEDULE_CONSULATE_DATE_TO)
             if Auth.isLoggedIn() == True:
                 if consulateDates is not False:
+                    if (END_TIME != None):
+                        START_TIME = datetime.today()
+                        duration = START_TIME - END_TIME
+                        with open('duration.log', 'a') as f:
+                            f.write('\nEnded at: %s' % END_TIME)
+                            f.write('\nReturned at: %s' % START_TIME)
+                            f.write('\nTime waiting: %s' % duration)
+                            f.write('\n------------------\n')
+                        END_TIME = None
+                        RETRY_COUNT = 0
                     if len(consulateDates):
-                        if (END_TIME != None):
-                            START_TIME = datetime.today()
-                            END_TIME = None
-                            RETRY_COUNT = 0
                         notify()
                         rescheduleStatus = False
                         for consulateDate in consulateDates:
