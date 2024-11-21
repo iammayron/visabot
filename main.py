@@ -5,10 +5,12 @@ from playsound import playsound
 
 import config
 from Auth import Auth
+from Notification import Notification
 from Schedule import Date, Reschedule, Time
 from Selenium import Selenium
 
 Auth = Auth()
+Notification = Notification()
 Date = Date()
 Time = Time()
 Reschedule = Reschedule()
@@ -17,9 +19,9 @@ Auth.login()
 
 
 def notify():
-    playsound('/Users/mayronalvesdearaujo/Downloads/notification.wav')
-    playsound('/Users/mayronalvesdearaujo/Downloads/notification.wav')
-    playsound('/Users/mayronalvesdearaujo/Downloads/notification.wav')
+    playsound('./message-notification-103496.mp3')
+    playsound('./message-notification-103496.mp3')
+    playsound('./message-notification-103496.mp3')
 
 
 def customMessage(message: str) -> None:
@@ -52,6 +54,7 @@ if __name__ == "__main__":
             print("------------------")
             consulateDates = Date.allFiltered(config.CONSULATE_DATE_URL, config.CONSULATE_SCHEDULED_DATE,
                                               config.SCHEDULE_CONSULATE_DATE_FROM, config.SCHEDULE_CONSULATE_DATE_TO)
+
             if Auth.isLoggedIn() == True:
                 if consulateDates is not False:
                     if (END_TIME != None):
@@ -66,6 +69,8 @@ if __name__ == "__main__":
                         RETRY_COUNT = 0
                     if len(consulateDates):
                         notify()
+                        Notification.send(
+                            'Consulate dates found!', 'We found some possible consulate dates.', 'push-notification')
                         rescheduleStatus = False
                         for consulateDate in consulateDates:
                             if rescheduleStatus is True:
@@ -133,6 +138,8 @@ if __name__ == "__main__":
                 time.sleep(60 * config.SLEEP_TIME)
             else:
                 Auth.login()
-        except:
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
             RETRY_COUNT += 1
             time.sleep(60 * config.SLEEP_TIME)

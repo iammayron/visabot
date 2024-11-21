@@ -53,6 +53,8 @@ class Auth(Base):
             (By.XPATH, "//a[contains(text(),'" + config.CONTINUE_BUTTON_TEXT + "')]")))
 
     def isLoggedIn(self) -> bool:
+        self.seleniumDriver.refresh()
+
         content = self.seleniumDriver.page_source
         content = str(content).lower()
         return content.find("too many requests") == -1 and content.find("need to sign in") == -1
