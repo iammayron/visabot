@@ -116,7 +116,7 @@ The bot can send notifications to your computer or mobile device via Pushover.
 1.	Create an account at pushover.net.
 2.	Copy your User Key and add it to .env as PUSHOVER_USER.
 3.	Create a new application on Pushover:
-•	Copy the API Token and add it to .env as PUSHOVER_TOKEN.
+    - Copy the API Token and add it to .env as PUSHOVER_TOKEN.
 4.	Ensure PUSHOVER_ENABLED is set to true.
 
 Note: Notifications will include an audible alert on your computer.
