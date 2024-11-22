@@ -23,7 +23,7 @@ class Notification():
         os.system(systemCommand.format(message, title))
 
     def toPushNotification(self, title, message):
-        requests.post(config.PUSHOVER_URL, {
+        requests.post("https://api.pushover.net/1/messages.json", {
             "user": config.PUSHOVER_USER,
             "token": config.PUSHOVER_TOKEN,
             "title": title,
