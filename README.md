@@ -2,6 +2,9 @@
 
 This project is a robot designed to schedule appointments at the US consulate for Brazilians. Follow the steps below to install the necessary dependencies and run the bot.
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/iammayron
+)
+
 ---
 
 ## Table of Contents
